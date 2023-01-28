@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/socks/")
+@RequestMapping("api/socks")
 
 public class SockController implements ApiSock {
     private final SockServiceImpl sockServiceImpl;
@@ -16,18 +16,23 @@ public class SockController implements ApiSock {
         this.sockServiceImpl = sockServiceImpl;
     }
 
+    @Override
     @GetMapping
     public ResponseEntity<String> getAllSocksWithParam(@RequestParam(required = false) String color,
                                                        @RequestParam(required = false) String operation,
                                                        @RequestParam(required = false) Integer cottonPart) {
         return ResponseEntity.ok(sockServiceImpl.getAllSocksWithParam(color, operation, cottonPart));
     }
-    @PostMapping ("/income")
-    public ResponseEntity <String> addSocks (@RequestBody SocksIncome socksIncome){
+
+    @Override
+    @PostMapping("/income")
+    public ResponseEntity<String> addSocks(@RequestBody SocksIncome socksIncome) {
         return ResponseEntity.ok(sockServiceImpl.addSocks(socksIncome));
     }
-    @DeleteMapping ("/outcome")
-    public ResponseEntity <String> deleteSocks (@RequestBody SocksIncome socksIncome){
+
+    @Override
+    @DeleteMapping("/outcome")
+    public ResponseEntity<String> deleteSocks(@RequestBody SocksIncome socksIncome) {
         return ResponseEntity.ok(sockServiceImpl.deleteSocks(socksIncome));
     }
 }

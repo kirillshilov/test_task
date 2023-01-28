@@ -3,6 +3,7 @@ package com.example.test_task.models;
 import jakarta.persistence.*;
 import lombok.*;
 
+
 import java.util.Objects;
 
 @Getter
@@ -13,7 +14,6 @@ import java.util.Objects;
 public class Sock {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
     private String color;
     private Integer cottonPart;

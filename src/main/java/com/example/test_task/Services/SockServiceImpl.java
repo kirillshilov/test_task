@@ -8,6 +8,8 @@ import com.example.test_task.models.Sock;
 import com.example.test_task.models.SocksIncome;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class SockServiceImpl implements SockService {
     private final SockRepository sockRepository;
@@ -16,6 +18,7 @@ public class SockServiceImpl implements SockService {
         this.sockRepository = sockRepository;
     }
 
+    @Override
     public String getAllSocksWithParam(String color, String operation, Integer cottonPart) {
         if (color.isBlank() || operation.isBlank() || cottonPart < 0 || cottonPart > 100) {
             throw new WrongParametersException("Введены неверные параметры. Или параметры отсутствуют");
@@ -27,11 +30,12 @@ public class SockServiceImpl implements SockService {
             return String.valueOf(sockRepository.findAllByColorIgnoreCaseAndCottonPartBefore(color, cottonPart).size());
         }
         if (operation.equals("equal")) {
-            return String.valueOf(sockRepository.findAllByColorIgnoreCaseAndCottonPartContaining(color, cottonPart));
+            return String.valueOf(sockRepository.findAllByColorIgnoreCaseAndCottonPartIs(color, cottonPart).size());
         }
         throw new BackendErrorException("Непредвиденная ошибка сервера");
     }
 
+    @Override
     public String addSocks(SocksIncome socksIncome) {
         variableCheckingMethod(socksIncome);
         Sock sock = parametrizedSock(socksIncome);
@@ -41,49 +45,21 @@ public class SockServiceImpl implements SockService {
         return "Партия носков " + sock + "успешно добавленна";
     }
 
-
+    @Override
     public String deleteSocks(SocksIncome socksIncome) {
         variableCheckingMethod(socksIncome);
         Sock sock = parametrizedSock(socksIncome);
+        List <Sock> sockList = sockRepository.findAllByColorIgnoreCaseAndCottonPartIs(sock.getColor(), sock.getCottonPart());
         for (int i = 0; i < socksIncome.getQuantity(); i++) {
-            sockRepository.delete(sock);
-        }
+        sockRepository.deleteById(sockList.get(i).getId());}
         return "Партия носков " + sock + "успешно удаленна";
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     private static Sock parametrizedSock(SocksIncome socksIncome) {
         Sock sock = new Sock();
         sock.setColor(socksIncome.getColor());
         sock.setCottonPart(socksIncome.getCottonPart());
+        sock.setId(0L);
         return sock;
     }
 
