@@ -18,9 +18,7 @@ public class SockController implements ApiSock {
 
     @Override
     @GetMapping
-    public ResponseEntity<String> getAllSocksWithParam(@RequestParam(required = false) String color,
-                                                       @RequestParam(required = false) String operation,
-                                                       @RequestParam(required = false) Integer cottonPart) {
+    public ResponseEntity<String> getAllSocksWithParam(@RequestParam(required = false) String color, @RequestParam(required = false) String operation, @RequestParam(required = false) Integer cottonPart) {
         return ResponseEntity.ok(sockServiceImpl.getAllSocksWithParam(color, operation, cottonPart));
     }
 

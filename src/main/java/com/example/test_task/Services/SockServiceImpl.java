@@ -49,9 +49,13 @@ public class SockServiceImpl implements SockService {
     public String deleteSocks(SocksIncome socksIncome) {
         variableCheckingMethod(socksIncome);
         Sock sock = parametrizedSock(socksIncome);
-        List <Sock> sockList = sockRepository.findAllByColorIgnoreCaseAndCottonPartIs(sock.getColor(), sock.getCottonPart());
+        List<Sock> sockList = sockRepository.findAllByColorIgnoreCaseAndCottonPartIs(sock.getColor(), sock.getCottonPart());
+        if (sockList.size() < socksIncome.getQuantity()) {
+            return "На складе меньше носков чем необходимо удалить! Всего на складе находится" + sockList.size() + "носков с такими характеристиками";
+        }
         for (int i = 0; i < socksIncome.getQuantity(); i++) {
-        sockRepository.deleteById(sockList.get(i).getId());}
+            sockRepository.deleteById(sockList.get(i).getId());
+        }
         return "Партия носков " + sock + "успешно удаленна";
     }
 
@@ -64,10 +68,7 @@ public class SockServiceImpl implements SockService {
     }
 
     private static void variableCheckingMethod(SocksIncome socksIncome) {
-        if (socksIncome.getColor().isBlank() ||
-                socksIncome.getCottonPart() < 0 ||
-                socksIncome.getCottonPart() > 100 ||
-                socksIncome.getQuantity() <= 0) {
+        if (socksIncome.getColor().isBlank() || socksIncome.getCottonPart() < 0 || socksIncome.getCottonPart() > 100 || socksIncome.getQuantity() <= 0) {
             throw new WrongParametersException("Введены неверные параметры. Или параметры отсутствуют");
         }
     }
